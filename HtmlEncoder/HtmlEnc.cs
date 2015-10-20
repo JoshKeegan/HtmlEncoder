@@ -94,9 +94,18 @@ namespace HtmlEncoder
                 return;
             }
 
+            // Make a copy of indices, so we know indices in the original HTML encoded string
+            int[] originalIndices = new int[indices.Length];
+            for (int i = 0; i < indices.Length; i++)
+            {
+                originalIndices[i] = indices[i];
+            }
+
             int l = value.Length;
             for (int i = 0; i < l; i++)
             {
+                int iCache = i;
+                bool skipWriteChar = false;
                 char ch = value[i];
 
                 if (ch == '&')
@@ -108,6 +117,9 @@ namespace HtmlEncoder
                     if (index > 0 && value[index] == ';')
                     {
                         string entity = value.Substring(i + 1, index - i - 1);
+
+                        // How much indices after i need to be corrected by
+                        int correctBy = entity.Length + 1; 
 
                         if (entity.Length > 1 && entity[0] == '#')
                         {
@@ -168,10 +180,13 @@ namespace HtmlEncoder
                                     ConvertSmpToUtf16(parsedValue, out leadingSurrogate, out trailingSurrogate);
                                     output.Write(leadingSurrogate);
                                     output.Write(trailingSurrogate);
+
+                                    // This character requires 2 bytes (chars) to store, account for that before correcting indices
+                                    correctBy--;
                                 }
 
                                 i = index; // already looked at everything until semicolon
-                                continue;
+                                skipWriteChar = true;
                             }
                         }
                         else
@@ -188,8 +203,39 @@ namespace HtmlEncoder
                                 output.Write('&');
                                 output.Write(entity);
                                 output.Write(';');
-                                continue;
+                                continue; // skips correcting indices & writing ch
                             }
+                        }
+
+                        // Correct indices if necessary
+                        if (correctBy > 0)
+                        {
+                            for (int j = 0; j < indices.Length; j++)
+                            {
+                                // If index requires correction
+                                if (originalIndices[j] > iCache)
+                                {
+                                    // If somewhere in the middle of the escaped HTML char, e.g. the m in &amp; 
+                                    //  (includes ; but not & as that will fail at the previous hurdle)
+                                    if (originalIndices[j] <= index)
+                                    {
+                                        // Caclulate what the starting position of this HTML encoded char is in
+                                        //  the plain text string by taking the difference at this index
+                                        //  between the original and updated indices from the starting position
+                                        //  in the HTML encoded string
+                                        indices[j] = iCache - (originalIndices[j] - indices[j]);
+                                    }
+                                    else
+                                    {
+                                        indices[j] -= correctBy;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (skipWriteChar)
+                        {
+                            continue;
                         }
                     }
                 }
