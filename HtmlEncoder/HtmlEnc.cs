@@ -1,5 +1,6 @@
 ﻿/*
- * HtmlEncoder
+ * HtmlEncoder lib
+ * HtmlEnc static class - 
  *  Encode/Decode HTML, as available through System.Net.WebUtility, but with the added feature of correcting given indices
  *  in the input string to be correct for the output string
  * Authors:
@@ -20,7 +21,7 @@ using System.Net.Configuration;
 
 namespace HtmlEncoder
 {
-    public static class HtmlEncoder
+    public static class HtmlEnc
     {
         // some consts copied from Char / CharUnicodeInfo since we don't have friend access to those types
         private const char HIGH_SURROGATE_START = '\uD800';
@@ -35,7 +36,7 @@ namespace HtmlEncoder
         private static readonly UnicodeDecodingConformance s_htmlDecodeConformance;
         //private static readonly UnicodeEncodingConformance s_htmlEncodeConformance;
 
-        static HtmlEncoder()
+        static HtmlEnc()
         {
             s_htmlDecodeConformance = UnicodeDecodingConformance.Strict;
             //s_htmlEncodeConformance = UnicodeEncodingConformance.Strict;
@@ -45,8 +46,15 @@ namespace HtmlEncoder
 
         private static readonly char[] s_htmlEntityEndingChars = new char[] { ';', '&' };
 
-        public static string HtmlDecode(string value)
+        public static string HtmlDecode(string value, ref int[] indices)
         {
+            // Could work without indices, but really the user should realy on 
+            //  System.Net.WebUtility for that, so lets not go there
+            if (indices == null)
+            {
+                throw new ArgumentNullException("indices");
+            }
+
             if (String.IsNullOrEmpty(value))
             {
                 return value;
@@ -59,11 +67,11 @@ namespace HtmlEncoder
             }
 
             StringWriter writer = new StringWriter();
-            HtmlDecode(value, writer);
+            HtmlDecode(value, writer, ref indices);
             return writer.ToString();
         }
         
-        private static void HtmlDecode(string value, TextWriter output)
+        private static void HtmlDecode(string value, TextWriter output, ref int[] indices)
         {
             if (value == null)
             {
@@ -72,6 +80,12 @@ namespace HtmlEncoder
             if (output == null)
             {
                 throw new ArgumentNullException("output");
+            }
+            // Could work without indices, but really the user should realy on 
+            //  System.Net.WebUtility for that, so lets not go there
+            if (indices == null)
+            {
+                throw new ArgumentNullException("indices");
             }
 
             if (!StringRequiresHtmlDecoding(value))
