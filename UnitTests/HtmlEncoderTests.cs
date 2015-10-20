@@ -193,5 +193,41 @@ namespace UnitTests
             Assert.AreEqual(EXPECTED_TEXT, actual);
             CollectionAssert.AreEqual(EXPECTED_INDICES, arr);
         }
+
+        [Test]
+        public void TestHtmlDecodeHtmlMultipleWithIndices()
+        {
+            const string EXPECTED_TEXT = "& asd & ght << 4";
+            int[] EXPECTED_INDICES = new int[] { 5, 6, 6, 15 };
+            int[] arr = new int[] { 9, 10, 12, 29 };
+            string actual = HtmlEnc.HtmlDecode("&amp; asd &amp; ght &lt;&lt; 4", ref arr);
+
+            Assert.AreEqual(EXPECTED_TEXT, actual);
+            CollectionAssert.AreEqual(EXPECTED_INDICES, arr);
+        }
+
+        [Test]
+        public void TestHtmlDecodeHtmlMultipleIncludingUnicodeWithIndices()
+        {
+            const string EXPECTED_TEXT = "& asd & ght å<< 4";
+            int[] EXPECTED_INDICES = new int[] { 5, 6, 6, 16 };
+            int[] arr = new int[] { 9, 10, 12, 35 };
+            string actual = HtmlEnc.HtmlDecode("&amp; asd &amp; ght &#229;&lt;&lt; 4", ref arr);
+
+            Assert.AreEqual(EXPECTED_TEXT, actual);
+            CollectionAssert.AreEqual(EXPECTED_INDICES, arr);
+        }
+
+        [Test]
+        public void TestHtmlDecodeHtmlMultipleIncludingUnicodeWithSurrogateWithIndices()
+        {
+            const string EXPECTED_TEXT = "& asd & ght å<<🚒 4";
+            int[] EXPECTED_INDICES = new int[] { 5, 6, 6, 18 }; // final value is 18, despite being the 17th actual character because 🚒 occupies 2 bytes and therefore 2 c# chars
+            int[] arr = new int[] { 9, 10, 12, 44 };
+            string actual = HtmlEnc.HtmlDecode("&amp; asd &amp; ght &#229;&lt;&lt;&#128658; 4", ref arr);
+
+            Assert.AreEqual(EXPECTED_TEXT, actual);
+            CollectionAssert.AreEqual(EXPECTED_INDICES, arr);
+        }
     }
 }
