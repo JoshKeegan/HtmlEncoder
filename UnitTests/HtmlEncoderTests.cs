@@ -186,7 +186,7 @@ namespace UnitTests
         public void TestHtmlDecodeHtmlUnicodeCharCodeWithSurrogateWithIndicesAfter()
         {
             const string EXPECTED_TEXT = "🚒 asd";
-            int[] EXPECTED_INDICES = new int[] { 1, 2 };
+            int[] EXPECTED_INDICES = new int[] { 2, 3 };
             int[] arr = new int[] { 9, 10 };
             string actual = HtmlEnc.HtmlDecode("&#128658; asd", ref arr);
 
