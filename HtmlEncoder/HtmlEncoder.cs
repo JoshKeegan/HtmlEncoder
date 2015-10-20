@@ -30,15 +30,15 @@ namespace HtmlEncoder
         private const int UNICODE_PLANE01_START = 0x10000;
         private const int UNICODE_PLANE16_END = 0x10FFFF;
 
-        private const int UnicodeReplacementChar = '\uFFFD';
+        //private const int UnicodeReplacementChar = '\uFFFD';
 
         private static readonly UnicodeDecodingConformance s_htmlDecodeConformance;
-        private static readonly UnicodeEncodingConformance s_htmlEncodeConformance;
+        //private static readonly UnicodeEncodingConformance s_htmlEncodeConformance;
 
         static HtmlEncoder()
         {
             s_htmlDecodeConformance = UnicodeDecodingConformance.Strict;
-            s_htmlEncodeConformance = UnicodeEncodingConformance.Strict;
+            //s_htmlEncodeConformance = UnicodeEncodingConformance.Strict;
         }
 
         #region HtmlEncode / HtmlDecode menthods
