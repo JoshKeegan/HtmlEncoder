@@ -10,7 +10,7 @@ By using HtmlEncoder to decode the HTML, you will also get corrected indices for
 TODO: NuGet package.  
 Build the latest source code in Release mode & reference HtmlEncoder.dll from your project.  
 Add using:
-```
+```cs
 using HtmlEncoder;
 ```
 Call HtmlEnc.HtmlDecode from within your code.  
@@ -18,7 +18,7 @@ Note that the array of indices are passed by reference, so the values in the arr
 
 ## Example Code
 Example of HtmlEnc.HtmlDecode being used, for more examples see UnitTests/HtmlEncTests.cs
-```
+```cs
 // Input HTML & indices for a substring
 int[] indices = new int[] { 17, 24 };
 string html = "Hello World &amp; some more text here :)";
