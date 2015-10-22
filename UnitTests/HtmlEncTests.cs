@@ -1,4 +1,13 @@
-﻿using System;
+﻿/*
+ * HtmlEncoder Tests
+ * HtmlEnc Tests
+ * Authors:
+ *  Josh Keegan 20/10/2015
+ * 
+ * Licensed under the MIT license. See LICENSE file in the project root for full license information.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +19,7 @@ using NUnit.Framework;
 
 namespace UnitTests
 {
-    public class HtmlEncoderTests
+    public class HtmlEncTests
     {
         [Test]
         public void TestHtmlDecodeEmptyString()
