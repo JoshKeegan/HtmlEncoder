@@ -24,9 +24,10 @@ namespace HtmlEncoder
     public static class HtmlEnc
     {
         // some consts copied from Char / CharUnicodeInfo since we don't have friend access to those types
-        private const char HIGH_SURROGATE_START = '\uD800';
-        private const char LOW_SURROGATE_START = '\uDC00';
-        private const char LOW_SURROGATE_END = '\uDFFF';
+        internal const char HIGH_SURROGATE_START = '\uD800';
+        internal const char HIGH_SURROGATE_END = '\uDBFF';
+        internal const char LOW_SURROGATE_START = '\uDC00';
+        internal const char LOW_SURROGATE_END = '\uDFFF';
         private const int UNICODE_PLANE00_END = 0x00FFFF;
         private const int UNICODE_PLANE01_START = 0x10000;
         private const int UNICODE_PLANE16_END = 0x10FFFF;
